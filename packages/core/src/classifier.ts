@@ -64,6 +64,7 @@ export interface Classifier {
 
 export type ClassifierDeps = {
   logger?: CoreLogger;
+  intraOpNumThreads?: number;
 };
 
 function unavailableClassifier(): Classifier {
@@ -113,7 +114,11 @@ export async function createClassifier(modelDir: string, deps: ClassifierDeps = 
 
   try {
     const modelPath = join(modelDir, 'nsfw_model.onnx');
-    const session = await InferenceSession.create(modelPath);
+    const sessionOptions: InferenceSession.SessionOptions = {};
+    if (deps.intraOpNumThreads !== undefined && deps.intraOpNumThreads > 0) {
+      sessionOptions.intraOpNumThreads = deps.intraOpNumThreads;
+    }
+    const session = await InferenceSession.create(modelPath, sessionOptions);
     logger.info('ONNX model loaded successfully.');
     return readyClassifier(session);
   } catch (err) {
