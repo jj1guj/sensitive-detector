@@ -25,9 +25,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-          # TODO: Re-enable after @tensorflow/tfjs-node supports Linux arm64
-          # Docker images for this runtime stack.
-          # - linux/arm64
+          - linux/arm64
     if: github.repository == 'misskey-dev/sensitive-detector'
     steps:
       - name: Prepare
